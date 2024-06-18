@@ -13,6 +13,7 @@ ignr = "^2.2"
 pydantic = {extras = ["email"], version = "^2.7.4"}
 sqlalchemy = "^2.0.30"
 pydantic-settings = "^2.3.3"
+alembic = "^1.13.1"
 
 
 [tool.poetry.group.dev.dependencies]
