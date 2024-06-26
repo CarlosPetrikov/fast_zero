@@ -1,3 +1,4 @@
+from datetime import datetime
 from http import HTTPStatus
 
 from fast_zero.models import TodoState
@@ -6,6 +7,8 @@ from .conftest import TodoFactory
 
 
 def test_create_todo(client, token):
+    expected_created_at = datetime.utcnow().replace(second=0, microsecond=0)
+
     response = client.post(
         "/todos/",
         headers={"Authorization": f"Bearer {token}"},
@@ -15,12 +18,21 @@ def test_create_todo(client, token):
             "state": "draft",
         },
     )
-    assert response.json() == {
-        "id": 1,
-        "title": "Test todo",
-        "description": "Test todo description",
-        "state": "draft",
-    }
+
+    assert response.status_code == HTTPStatus.OK
+
+    response_json = response.json()
+
+    response_created_at = datetime.fromisoformat(response_json["created_at"]).replace(second=0, microsecond=0)
+    response_updated_at = datetime.fromisoformat(response_json["updated_at"]).replace(second=0, microsecond=0)
+
+    # Verifica se os campos estão corretos
+    assert response_json["title"] == "Test todo"
+    assert response_json["description"] == "Test todo description"
+    assert response_json["state"] == "draft"
+    assert response_json["id"] == 1
+    assert response_created_at == expected_created_at
+    assert response_updated_at == expected_created_at
 
 
 def test_list_todos_should_return_5_todos(session, client, user, token):
