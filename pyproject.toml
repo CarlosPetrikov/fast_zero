@@ -51,3 +51,6 @@ run = 'fastapi dev fast_zero/app.py'
 pre_test = 'task lint'
 test = 'pytest -s --maxfail=1000 --cov=fast_zero -vv'
 post_test = 'coverage html'
+
+# alembic revision --autogenerate -m "create todos table"
+# alembic upgrade head
